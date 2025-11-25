@@ -1,6 +1,15 @@
 spring:
   application:
     name: tutormatic-auth-service
+  datasource:
+    username: ${TUTORMATIC_USERNAME}
+    password: ${TUTORMATIC_PASSWORD}
+    url: "jdbc:postgresql://auth-database:4000/tutormatic"
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
 
 server:
   port: 8080
+
