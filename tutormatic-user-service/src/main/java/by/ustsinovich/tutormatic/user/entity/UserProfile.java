@@ -15,13 +15,13 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "users", schema = "users")
-public class User {
+@Table(name = "user_profiles", schema = "users")
+public class UserProfile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", nullable = false, updatable = false, unique = true)
-    private UUID id;
+    @Column(name = "user_id", nullable = false, updatable = false, unique = true)
+    private UUID userId;
 
     @Embedded
     private PersonalInfo personalInfo;
