@@ -1,0 +1,32 @@
+services:
+  auth-service:
+    build: ./tutormatic-auth-service
+    ports:
+      - "3000:8080"
+    depends_on:
+      - auth-database
+
+  auth-database:
+    image: postgres:18-alpine
+    ports:
+      - "4000:5432"
+    environment:
+      POSTGRES_DB: ${TUTORMATIC_DATABASE}
+      POSTGRES_USER: ${TUTORMATIC_USERNAME}
+      POSTGRES_PASSWORD: ${TUTORMATIC_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - auth-service-network
+
+volumes:
+  postgres_data:
+
+networks:
+  auth-service-network:
+    driver: bridge
