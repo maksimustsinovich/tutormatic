@@ -18,8 +18,8 @@ public class UserCredentials {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", nullable = false, updatable = false, unique = true)
-    private UUID id;
+    @Column(name = "user_id", nullable = false, updatable = false, unique = true)
+    private UUID userId;
 
     @Column(name = "username", unique = true, nullable = false)
     private String username;
