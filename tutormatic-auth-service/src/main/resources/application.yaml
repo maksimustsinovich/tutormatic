@@ -10,6 +10,12 @@ spring:
       ddl-auto: create
     show-sql: true
 
+security:
+  jwt:
+    secret: ${TUTORMATIC_JWT_SECRET}
+    access-token-expiration: ${TUTORMATIC_ACCESS_TOKEN_EXPIRATION}
+    refresh-token-expiration: ${TUTORMATIC_REFRESH_TOKEN_EXPIRATION}
+
 server:
   port: 8080
 
