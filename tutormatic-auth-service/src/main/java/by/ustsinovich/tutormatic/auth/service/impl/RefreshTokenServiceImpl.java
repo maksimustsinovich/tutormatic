@@ -20,6 +20,8 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     private final RefreshTokenRepository refreshTokenRepository;
 
     private final JwtService jwtService;
+    
+    private final JwtConfig jwtConfig;
 
     @Override
     @Transactional
@@ -34,7 +36,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         RefreshToken refreshToken = RefreshToken.builder()
                 .user(user)
                 .token(token)
-                .expiryDate(Instant.now().plusSeconds(604800)) // 7 days
+                .expiryDate(Instant.now().plusMillis(jwtConfig.getRefreshTokenExpirationMillis()))
                 .build();
 
         return refreshTokenRepository.save(refreshToken);
