@@ -4,7 +4,7 @@ spring:
   datasource:
     username: ${TUTORMATIC_USERNAME}
     password: ${TUTORMATIC_PASSWORD}
-    url: "jdbc:postgresql://auth-database:4000/tutormatic"
+    url: "jdbc:postgresql://localhost:4000/tutormatic"
   jpa:
     hibernate:
       ddl-auto: create
