@@ -9,5 +9,9 @@ public interface AuthService {
     AuthResponse login(LoginRequest request);
 
     AuthResponse refresh(RefreshRequest request);
+    
+    String extractUsernameFromToken(String token);
+    
+    void logout(String username);
 
 }

@@ -3,9 +3,11 @@ package by.ustsinovich.tutormatic.auth.service.impl;
 import by.ustsinovich.tutormatic.auth.dto.AuthResponse;
 import by.ustsinovich.tutormatic.auth.dto.LoginRequest;
 import by.ustsinovich.tutormatic.auth.dto.RefreshRequest;
+import by.ustsinovich.tutormatic.auth.entity.UserCredentials;
 import by.ustsinovich.tutormatic.auth.exception.InvalidRefreshTokenException;
 import by.ustsinovich.tutormatic.auth.service.AuthService;
 import by.ustsinovich.tutormatic.auth.service.JwtService;
+import by.ustsinovich.tutormatic.auth.service.RefreshTokenService;
 import by.ustsinovich.tutormatic.auth.service.TutormaticUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,6 +25,8 @@ public class AuthServiceImpl implements AuthService {
     private final JwtService jwtService;
 
     private final TutormaticUserDetailsService tutormaticUserDetailsService;
+    
+    private final RefreshTokenService refreshTokenService;
 
     @Override
     @Transactional
@@ -53,12 +57,30 @@ public class AuthServiceImpl implements AuthService {
         }
 
         final var username = jwtService.extractUsernameFromToken(refreshToken);
+        final var userDetails = tutormaticUserDetailsService.loadUserByUsername(username);
 
-
+        final var newAccessToken = jwtService.generateAccessToken(userDetails);
+        final var newRefreshToken = jwtService.generateRefreshToken(userDetails);
 
         return AuthResponse
                 .builder()
+                .accessToken(newAccessToken)
+                .refreshToken(newRefreshToken)
                 .build();
+    }
+
+    @Override
+    public String extractUsernameFromToken(String token) {
+        return jwtService.extractUsernameFromToken(token);
+    }
+
+    @Override
+    @Transactional
+    public void logout(String username) {
+        // Load user details to get the user object
+        UserCredentials user = (UserCredentials) tutormaticUserDetailsService.loadUserByUsername(username);
+        // Delete all refresh tokens associated with the user
+        refreshTokenService.deleteByUser(user);
     }
 
 }
