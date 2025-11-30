@@ -5,6 +5,7 @@ import by.ustsinovich.tutormatic.auth.dto.AuthResponse;
 import by.ustsinovich.tutormatic.auth.dto.LoginRequest;
 import by.ustsinovich.tutormatic.auth.dto.RefreshRequest;
 import by.ustsinovich.tutormatic.auth.dto.RegisterRequest;
+import by.ustsinovich.tutormatic.auth.service.AuthService;
 import by.ustsinovich.tutormatic.auth.service.RegisterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,20 +17,22 @@ public class AuthRestControllerImpl implements AuthRestController {
 
     private final RegisterService registerService;
 
+    private final AuthService authService;
+
     @Override
     @Transactional
-    public void register(RegisterRequest request) {
+    public void register(final RegisterRequest request) {
         registerService.register(request);
     }
 
     @Override
-    public AuthResponse login(LoginRequest request) {
-        return null;
+    public AuthResponse login(final LoginRequest request) {
+        return authService.login(request);
     }
 
     @Override
-    public AuthResponse refresh(RefreshRequest request) {
-        return null;
+    public AuthResponse refresh(final RefreshRequest request) {
+        return authService.refresh(request);
     }
 
     @Override
