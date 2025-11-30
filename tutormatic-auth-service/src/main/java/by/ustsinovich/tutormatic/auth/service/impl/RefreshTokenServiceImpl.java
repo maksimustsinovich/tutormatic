@@ -1,5 +1,6 @@
 package by.ustsinovich.tutormatic.auth.service.impl;
 
+import by.ustsinovich.tutormatic.auth.config.JwtConfig;
 import by.ustsinovich.tutormatic.auth.entity.RefreshToken;
 import by.ustsinovich.tutormatic.auth.entity.UserCredentials;
 import by.ustsinovich.tutormatic.auth.entity.UserPrincipal;
@@ -62,6 +63,6 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     @Transactional(readOnly = true)
     public RefreshToken findByToken(String token) {
         return refreshTokenRepository.findByToken(token)
-                .orElseThrow(() -> new InvalidRefreshTokenException());
+                .orElseThrow(InvalidRefreshTokenException::new);
     }
 }
