@@ -19,12 +19,13 @@ import java.util.UUID;
 public class UserPrincipal implements UserDetails {
 
     private UUID userId;
+
     private String username;
+
     private String password;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // For now, return a basic role - this can be expanded based on your needs
         return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
 

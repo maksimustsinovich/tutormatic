@@ -4,7 +4,6 @@ import by.ustsinovich.tutormatic.auth.dto.AuthResponse;
 import by.ustsinovich.tutormatic.auth.dto.LoginRequest;
 import by.ustsinovich.tutormatic.auth.dto.RefreshRequest;
 import by.ustsinovich.tutormatic.auth.entity.UserCredentials;
-import by.ustsinovich.tutormatic.auth.exception.InvalidRefreshTokenException;
 import by.ustsinovich.tutormatic.auth.service.AuthService;
 import by.ustsinovich.tutormatic.auth.service.JwtService;
 import by.ustsinovich.tutormatic.auth.service.RefreshTokenService;
