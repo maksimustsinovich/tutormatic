@@ -4,18 +4,22 @@ import by.ustsinovich.tutormatic.auth.entity.RefreshToken;
 import by.ustsinovich.tutormatic.auth.entity.UserCredentials;
 import by.ustsinovich.tutormatic.auth.exception.InvalidRefreshTokenException;
 import by.ustsinovich.tutormatic.auth.repository.RefreshTokenRepository;
+import by.ustsinovich.tutormatic.auth.service.JwtService;
 import by.ustsinovich.tutormatic.auth.service.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     private final RefreshTokenRepository refreshTokenRepository;
+
+    private final JwtService jwtService;
 
     @Override
     @Transactional
