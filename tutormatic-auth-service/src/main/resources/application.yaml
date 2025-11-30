@@ -4,11 +4,13 @@ spring:
   datasource:
     username: ${TUTORMATIC_USERNAME}
     password: ${TUTORMATIC_PASSWORD}
-    url: "jdbc:postgresql://localhost:4000/tutormatic"
+    url: "jdbc:postgresql://auth-database:5432/tutormatic"
+    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: create
     show-sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
 
 security:
   jwt:

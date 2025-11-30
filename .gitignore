@@ -8,48 +8,16 @@
 *.so
 *.a
 *.out
-
-# Dependencies
-target/
-.gradle/
-node_modules/
-venv/
-.venv/
+*.pyc
 __pycache__/
-.mypy_cache/
-.pytest_cache/
-dist/
-build/
-
-# Logs and temp files
-*.log
-*.tmp
-*.swp
-*.swo
-
-# Environment
-.env
-.env.local
-*.env.*
-
-# Editors
-.vscode/
-.idea/
-
-# System files
-.DS_Store
-Thumbs.db
-
-# Coverage reports
-coverage/
-htmlcov/
-.coverage
-
-# Common compressed files
+*.pyo
+*.pyd
+*.jar
+*.war
+*.ear
+*.tar
 *.zip
 *.gz
-*.tar
-*.tgz
 *.bz2
 *.xz
 *.7z
@@ -68,4 +36,84 @@ htmlcov/
 *.tar.bz2
 *.tar.xz
 *.tar.zst
+
+# Dependencies
+node_modules/
+venv/
+.venv/
+.env
+.env.local
+.env.*
+target/
+.gradle/
+.mypy_cache/
+.pytest_cache/
+coverage/
+htmlcov/
+.nyc_output/
+.cargo/
+.cmake/
+cmake-build-*/
+.npm/
+.yarn/
+.pnpm/
+.pip/
+.tox/
+.venv-*/
+env-*/
+env-*
+.conda/
+.miniconda/
+.anaconda/
+
+# Build directories
+dist/
+build/
+out/
+bin/
+obj/
+lib/
+tmp/
+temp/
+
+# Logs and temp files
+*.log
+*.tmp
+*.swp
+*.swo
+*.bak
+*.backup
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+ehthumbs.db
+
+# Editors
+.vscode/
+.idea/
+.project
+.classpath
+.settings/
+*.swp
+*.swo
+*~
+\#*\#
+*.bak
+*.backup
+*.tmp
+*.temp
+
+# System files
+.DS_Store
+Thumbs.db
+*.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*:*
+*?
 ```
