@@ -5,11 +5,11 @@ COPY pom.xml .
 COPY .mvn .mvn
 COPY mvnw .
 
-RUN  mvn dependency:go-offline -B
-
 COPY src ./src
 
-RUN mvn clean package -DskipTests
+RUN mvn clean compile
+
+RUN mvn package -DskipTests
 
 FROM amazoncorretto:25-alpine
 WORKDIR /app
