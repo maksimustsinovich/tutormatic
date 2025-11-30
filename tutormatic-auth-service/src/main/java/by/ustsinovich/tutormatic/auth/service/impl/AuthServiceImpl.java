@@ -36,9 +36,11 @@ public class AuthServiceImpl implements AuthService {
         );
 
         final var userDetails = (UserDetails) authentication.getPrincipal();
+        final UserCredentials user = (UserCredentials) tutormaticUserDetailsService.loadUserByUsername(request.username());
 
         final var accessToken = jwtService.generateAccessToken(userDetails);
-        final var refreshToken = jwtService.generateRefreshToken(userDetails);
+        final var refreshTokenEntity = refreshTokenService.createRefreshToken(user);
+        final var refreshToken = refreshTokenEntity.getToken();
 
         return AuthResponse
                 .builder()
@@ -50,17 +52,22 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public AuthResponse refresh(final RefreshRequest request) {
-        final var refreshToken = request.refreshToken();
-
-        if (!jwtService.isValidToken(refreshToken) || !jwtService.isRefreshToken(refreshToken)) {
-            throw new InvalidRefreshTokenException();
-        }
-
-        final var username = jwtService.extractUsernameFromToken(refreshToken);
-        final var userDetails = tutormaticUserDetailsService.loadUserByUsername(username);
+        final var refreshTokenString = request.refreshToken();
+        
+        // Find the refresh token in the database
+        final var refreshToken = refreshTokenService.findByToken(refreshTokenString);
+        
+        // Verify the token hasn't expired
+        refreshTokenService.verifyExpiration(refreshToken);
+        
+        // Load user details
+        final var userDetails = tutormaticUserDetailsService.loadUserByUsername(refreshToken.getUser().getUsername());
 
         final var newAccessToken = jwtService.generateAccessToken(userDetails);
-        final var newRefreshToken = jwtService.generateRefreshToken(userDetails);
+        
+        // Create a new refresh token
+        final var newRefreshTokenEntity = refreshTokenService.createRefreshToken(refreshToken.getUser());
+        final var newRefreshToken = newRefreshTokenEntity.getToken();
 
         return AuthResponse
                 .builder()
