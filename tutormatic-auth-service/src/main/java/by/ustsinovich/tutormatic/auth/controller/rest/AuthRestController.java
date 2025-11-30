@@ -131,7 +131,7 @@ public interface AuthRestController {
     @PostMapping("/logout")
     void logout(
             @Valid
-            @RequestHeader(HttpHeaders.AUTHORIZATION)
+            @RequestBody
             String accessToken
     );
 

@@ -4,6 +4,8 @@ import by.ustsinovich.tutormatic.auth.dto.AuthResponse;
 import by.ustsinovich.tutormatic.auth.dto.LoginRequest;
 import by.ustsinovich.tutormatic.auth.dto.RefreshRequest;
 import by.ustsinovich.tutormatic.auth.entity.UserCredentials;
+import by.ustsinovich.tutormatic.auth.entity.UserPrincipal;
+import by.ustsinovich.tutormatic.auth.repository.UserCredentialsRepository;
 import by.ustsinovich.tutormatic.auth.service.AuthService;
 import by.ustsinovich.tutormatic.auth.service.JwtService;
 import by.ustsinovich.tutormatic.auth.service.RefreshTokenService;
@@ -11,7 +13,6 @@ import by.ustsinovich.tutormatic.auth.service.TutormaticUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,21 +25,22 @@ public class AuthServiceImpl implements AuthService {
     private final JwtService jwtService;
 
     private final TutormaticUserDetailsService tutormaticUserDetailsService;
-    
+
+    private final UserCredentialsRepository userCredentialsRepository;
+
     private final RefreshTokenService refreshTokenService;
 
     @Override
     @Transactional
     public AuthResponse login(final LoginRequest request) {
-        final var authentication = authenticationManager.authenticate(
+        authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.username(), request.password())
         );
 
-        final var userDetails = (UserDetails) authentication.getPrincipal();
-        final UserCredentials user = (UserCredentials) tutormaticUserDetailsService.loadUserByUsername(request.username());
+        final UserPrincipal userDetails = (UserPrincipal) tutormaticUserDetailsService.loadUserByUsername(request.username());
 
         final var accessToken = jwtService.generateAccessToken(userDetails);
-        final var refreshTokenEntity = refreshTokenService.createRefreshToken(user);
+        final var refreshTokenEntity = refreshTokenService.createRefreshToken(userDetails);
         final var refreshToken = refreshTokenEntity.getToken();
 
         return AuthResponse.builder()
@@ -59,12 +61,12 @@ public class AuthServiceImpl implements AuthService {
         refreshTokenService.verifyExpiration(refreshToken);
         
         // Load user details
-        final var userDetails = tutormaticUserDetailsService.loadUserByUsername(refreshToken.getUser().getUsername());
+        final var userDetails = (UserPrincipal) tutormaticUserDetailsService.loadUserByUsername(refreshToken.getUser().getUsername());
 
         final var newAccessToken = jwtService.generateAccessToken(userDetails);
         
         // Create a new refresh token
-        final var newRefreshTokenEntity = refreshTokenService.createRefreshToken(refreshToken.getUser());
+        final var newRefreshTokenEntity = refreshTokenService.createRefreshToken(userDetails);
         final var newRefreshToken = newRefreshTokenEntity.getToken();
 
         return AuthResponse
@@ -83,9 +85,9 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public void logout(String username) {
         // Load user details to get the user object
-        UserCredentials user = (UserCredentials) tutormaticUserDetailsService.loadUserByUsername(username);
+        UserPrincipal user = (UserPrincipal) tutormaticUserDetailsService.loadUserByUsername(username);
         // Delete all refresh tokens associated with the user
-        refreshTokenService.deleteByUser(user);
+        refreshTokenService.deleteByUser(userCredentialsRepository.findByUsername(user.getUsername()).orElseThrow());
     }
 
 }

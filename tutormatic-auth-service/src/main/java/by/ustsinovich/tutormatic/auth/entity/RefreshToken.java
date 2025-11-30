@@ -3,9 +3,11 @@ package by.ustsinovich.tutormatic.auth.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
 
+@EntityListeners(AuditingEntityListener.class)
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -31,7 +33,7 @@ public class RefreshToken {
     private Instant expiryDate;
 
     @CreatedDate
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "created_at", updatable = false)
     private Instant createdAt;
 
 }

@@ -6,6 +6,7 @@ import by.ustsinovich.tutormatic.auth.entity.UserCredentials;
 import by.ustsinovich.tutormatic.auth.entity.UserPrincipal;
 import by.ustsinovich.tutormatic.auth.exception.InvalidRefreshTokenException;
 import by.ustsinovich.tutormatic.auth.repository.RefreshTokenRepository;
+import by.ustsinovich.tutormatic.auth.repository.UserCredentialsRepository;
 import by.ustsinovich.tutormatic.auth.service.JwtService;
 import by.ustsinovich.tutormatic.auth.service.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
@@ -20,13 +21,15 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     private final RefreshTokenRepository refreshTokenRepository;
 
+    private final UserCredentialsRepository userCredentialsRepository;
+
     private final JwtService jwtService;
     
     private final JwtConfig jwtConfig;
 
     @Override
     @Transactional
-    public RefreshToken createRefreshToken(UserCredentials user) {
+    public RefreshToken createRefreshToken(UserPrincipal user) {
         UserPrincipal userPrincipal = UserPrincipal.builder()
                 .userId(user.getUserId())
                 .username(user.getUsername())
@@ -35,7 +38,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         
         String token = jwtService.generateRefreshToken(userPrincipal);
         RefreshToken refreshToken = RefreshToken.builder()
-                .user(user)
+                .user(userCredentialsRepository.findByUsername(user.getUsername()).orElseThrow())
                 .token(token)
                 .expiryDate(Instant.now().plusMillis(jwtConfig.getRefreshTokenExpirationMillis()))
                 .build();

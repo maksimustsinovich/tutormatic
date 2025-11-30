@@ -2,10 +2,11 @@ package by.ustsinovich.tutormatic.auth.service;
 
 import by.ustsinovich.tutormatic.auth.entity.RefreshToken;
 import by.ustsinovich.tutormatic.auth.entity.UserCredentials;
+import by.ustsinovich.tutormatic.auth.entity.UserPrincipal;
 
 public interface RefreshTokenService {
 
-    RefreshToken createRefreshToken(UserCredentials user);
+    RefreshToken createRefreshToken(UserPrincipal user);
 
     RefreshToken verifyExpiration(RefreshToken token);
 
