@@ -2,6 +2,7 @@ package by.ustsinovich.tutormatic.auth.service.impl;
 
 import by.ustsinovich.tutormatic.auth.entity.RefreshToken;
 import by.ustsinovich.tutormatic.auth.entity.UserCredentials;
+import by.ustsinovich.tutormatic.auth.entity.UserPrincipal;
 import by.ustsinovich.tutormatic.auth.exception.InvalidRefreshTokenException;
 import by.ustsinovich.tutormatic.auth.repository.RefreshTokenRepository;
 import by.ustsinovich.tutormatic.auth.service.JwtService;
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -24,9 +24,16 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     @Override
     @Transactional
     public RefreshToken createRefreshToken(UserCredentials user) {
+        UserPrincipal userPrincipal = UserPrincipal.builder()
+                .userId(user.getUserId())
+                .username(user.getUsername())
+                .password(user.getPassword())
+                .build();
+        
+        String token = jwtService.generateRefreshToken(userPrincipal);
         RefreshToken refreshToken = RefreshToken.builder()
                 .user(user)
-                .token(UUID.randomUUID().toString())
+                .token(token)
                 .expiryDate(Instant.now().plusSeconds(604800)) // 7 days
                 .build();
 
