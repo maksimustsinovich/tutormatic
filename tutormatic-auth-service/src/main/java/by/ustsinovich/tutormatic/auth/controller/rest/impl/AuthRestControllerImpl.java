@@ -8,6 +8,7 @@ import by.ustsinovich.tutormatic.auth.dto.RegisterRequest;
 import by.ustsinovich.tutormatic.auth.service.AuthService;
 import by.ustsinovich.tutormatic.auth.service.RegisterService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,7 +38,10 @@ public class AuthRestControllerImpl implements AuthRestController {
 
     @Override
     public void logout(String accessToken) {
-
+        // Extract username from the access token to identify the user
+        String username = authService.extractUsernameFromToken(accessToken.replace("Bearer ", ""));
+        // Delete refresh tokens associated with the user
+        authService.logout(username);
     }
 
 }

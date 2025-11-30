@@ -4,6 +4,7 @@ import by.ustsinovich.tutormatic.auth.config.JwtConfig;
 import by.ustsinovich.tutormatic.auth.enumeration.TokenClaims;
 import by.ustsinovich.tutormatic.auth.enumeration.TokenType;
 import by.ustsinovich.tutormatic.auth.service.JwtService;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -74,7 +75,72 @@ public class JwtServiceImpl implements JwtService {
     @Override
     @Transactional
     public Boolean isValidToken(final String token) {
-        return null;
+        try {
+            final Claims claims = Jwts.parser()
+                    .verifyWith(secretKey)
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+            return !claims.getExpiration().before(new Date());
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    @Transactional
+    public Boolean isRefreshToken(final String token) {
+        try {
+            final Claims claims = Jwts.parser()
+                    .verifyWith(secretKey)
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+            return TokenType.REFRESH.equals(claims.get(TokenClaims.TYPE.getValue(), TokenType.class));
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    @Transactional
+    public String extractUsernameFromToken(final String token) {
+        try {
+            final Claims claims = Jwts.parser()
+                    .verifyWith(secretKey)
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+            return claims.getSubject();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Override
+    @Transactional
+    public String extractUsername(String token) {
+        return extractUsernameFromToken(token);
+    }
+
+    @Override
+    @Transactional
+    public Boolean isTokenValid(String token, UserDetails userDetails) {
+        final String username = extractUsername(token);
+        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+    }
+
+    private Boolean isTokenExpired(String token) {
+        try {
+            final Claims claims = Jwts.parser()
+                    .verifyWith(secretKey)
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+            return claims.getExpiration().before(new Date());
+        } catch (Exception e) {
+            return true; // Consider token as expired if there's an error
+        }
     }
 
 }
