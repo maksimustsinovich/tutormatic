@@ -11,7 +11,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "user_credentials", schema = "auth")
+@Table(name = "user_credentials")
 public class UserCredentials {
 
     @Id

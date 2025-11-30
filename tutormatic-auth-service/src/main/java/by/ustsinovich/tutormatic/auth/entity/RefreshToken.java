@@ -12,7 +12,7 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "refresh_tokens", schema = "auth")
+@Table(name = "refresh_tokens")
 public class RefreshToken {
 
     @Id

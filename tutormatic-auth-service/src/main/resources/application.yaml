@@ -19,5 +19,5 @@ security:
     refresh-token-expiration: ${TUTORMATIC_REFRESH_TOKEN_EXPIRATION}
 
 server:
-  port: 8080
+  port: 8000
 

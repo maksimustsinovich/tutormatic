@@ -4,14 +4,17 @@ services:
     env_file:
       - .env
     ports:
-      - "3000:8080"
+      - "8000:8000"
     depends_on:
       - auth-database
+    environment:
+      - SERVER_PORT=8000
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://auth-database/tutormatic
 
   auth-database:
     image: postgres:18-alpine
     ports:
-      - "4000:5432"
+      - "15432:5432"
     environment:
       POSTGRES_DB: ${TUTORMATIC_DATABASE}
       POSTGRES_USER: ${TUTORMATIC_USERNAME}
@@ -23,12 +26,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    networks:
-      - auth-service-network
 
 volumes:
   postgres_data:
-
-networks:
-  auth-service-network:
-    driver: bridge

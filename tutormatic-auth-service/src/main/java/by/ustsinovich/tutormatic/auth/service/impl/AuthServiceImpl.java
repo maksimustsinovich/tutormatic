@@ -41,8 +41,7 @@ public class AuthServiceImpl implements AuthService {
         final var refreshTokenEntity = refreshTokenService.createRefreshToken(user);
         final var refreshToken = refreshTokenEntity.getToken();
 
-        return AuthResponse
-                .builder()
+        return AuthResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
